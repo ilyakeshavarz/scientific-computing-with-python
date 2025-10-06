@@ -1,1 +1,55 @@
+def add_time(start, duration, day=False):
+    week_days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
+    parts = str(start).split()
+    time_part = parts[0]
+    period = parts[1]
+    h1, m1 = time_part.split(':')
+    h1 = int(h1)
+    m1 = int(m1)
+    
+    if period == 'PM' and h1 != 12:
+        h1 += 12
+    if period == 'AM' and h1 == 12:
+        h1 = 0
+    
+    h2, m2 = str(duration).split(':')
+    h2 = int(h2)
+    m2 = int(m2)
+    
+    total_m = m1 + m2
+    extra_h = total_m // 60
+    final_m = total_m % 60
+    
+    total_h = h1 + h2 + extra_h
+    days_later = total_h // 24
+    final_h_24 = total_h % 24
+    
+    if final_h_24 == 0:
+        final_h = 12
+        final_p = 'AM'
+    elif final_h_24 == 12:
+        final_h = 12
+        final_p = 'PM'
+    elif final_h_24 > 12:
+        final_h = final_h_24 - 12
+        final_p = 'PM'
+    else:
+        final_h = final_h_24
+        final_p = 'AM'
+    
+    if day:
+        day_index = week_days.index(day.lower())
+        new_day_index = (day_index + days_later) % 7
+        new_day = week_days[new_day_index].capitalize()
+    
+    result = f"{final_h}:{final_m:02d} {final_p}"
+    
+    if day:
+        result += f", {new_day}"
+    
+    if days_later == 1:
+        result += " (next day)"
+    elif days_later > 1:
+        result += f" ({days_later} days later)"
 
+    return result
